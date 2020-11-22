@@ -56,7 +56,6 @@ public class ItemHolder : MonoBehaviour, /*IPointerClickHandler,*/ IPointerEnter
         if (!item.PodeSeAcumular)
             Debug.Log("Esse item NÃO pode se acumular");
     }
-
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (item != null)
@@ -111,7 +110,6 @@ public class ItemHolder : MonoBehaviour, /*IPointerClickHandler,*/ IPointerEnter
     {
         StopAllCoroutines();
     }
-
 
     //if (eventData != null)
     //{

@@ -9,8 +9,9 @@ public class GameController : MonoBehaviour
     string saveGameFileName = "Light_Steps_Save.xml";
     string senha = "Inventário é chato de programar. Nossa senhora!";
 
-    PlayerData player;
-
+    public PlayerData player;
+    public List<NPCData> NPCs;
+    public List<Quest> quests;
 
 
     private void Awake()
@@ -38,8 +39,15 @@ public class GameController : MonoBehaviour
         XmlSerializer serializador = new XmlSerializer(typeof(DadosSaveGame));  //serializador de XML
         StreamWriter escritaDoArquivo = new StreamWriter(saveGameFileName);        //abre o arquivo para salvar
 
+        foreach(NPCScript npcObject in FindObjectsOfType<NPCScript>())
+        {
+            NPCs.Add(npcObject.npc);
+        }
         ///Tudo aqui são dados salvos
+        quests = QuestData.quests;
+        saveGame.quests = quests;
         saveGame.player = player;
+        saveGame.NPCs = NPCs;
         ///
 
         serializador.Serialize(escritaDoArquivo.BaseStream, saveGame);  //mandamos salvar
@@ -54,16 +62,40 @@ public class GameController : MonoBehaviour
         XmlSerializer serializador = new XmlSerializer(typeof(DadosSaveGame));      //serializador de XML
         StreamReader leituraDoArquivo = new StreamReader(saveGameFileName);             //arquivo a ser lido
 
-        DadosSaveGame saveGame = (DadosSaveGame)serializador.Deserialize(leituraDoArquivo.BaseStream);  //fazemos a leitura e desserializamos para o objeto do savegame
+        saveGame = (DadosSaveGame)serializador.Deserialize(leituraDoArquivo.BaseStream);  //fazemos a leitura e desserializamos para o objeto do savegame
 
         ///Tudo aqui são dados carregados
+        quests = saveGame.quests;
         player = saveGame.player;
+        NPCs = saveGame.NPCs;
         ///
+        QuestData.quests = quests;
+        ReiniciarNPCs();
+
 
         leituraDoArquivo.Close();
         CriptografarSave(saveGameFileName);     
     }
+    void ReiniciarNPCs()
+    {
 
+        NPCScript[] npcObjects = FindObjectsOfType<NPCScript>();
+        for (int i = 0; i < npcObjects.Length; i++)
+        {
+            #region Instancia um novo npc na posição do último save
+            GameObject instantiated = GameObject.Instantiate(npcObjects[i].gameObject, NPCs[i].position, Quaternion.identity);
+            if(instantiated.GetComponent<NPCScript>() == null)
+            {
+                instantiated.AddComponent<NPCScript>();
+            }
+            instantiated.GetComponent<NPCScript>().npc = NPCs[i];
+            #endregion
+            Destroy(npcObjects[i].gameObject); //destrói o npc ativo antes do load 
+
+        }
+
+
+    }
 
     void CriptografarSave(string saveGameFileName)
     {

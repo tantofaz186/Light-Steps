@@ -9,12 +9,13 @@ public class Gancho : ObjetoDeInteracao
     [SerializeField] Vector3 pontoFinal;
     public Vector3 PontoMaximo { get { return transform.position + pontoMaximo; } }
     public Vector3 PontoFinal { get { return transform.position + pontoFinal; } }
-
+    private void OnValidate()
+    {
+        actionText = "Usar Gancho";
+    }
     public override void Interagir(GameObject agent)
     {
-        float distance = Vector3.Distance(agent.transform.position, pontoDeInteração) - raioDeInteração;
-        Debug.Log(distance);
-        if (distance <= 0)
+        if (InRange(agent))
         {
             agent.GetComponentInChildren<GrapplingHook>().SetFoco(this);
         }

@@ -5,10 +5,14 @@ using UnityEngine.SceneManagement;
 
 public class ItemDeColetaNoCenario : ObjetoDeInteracao
 {
-    [SerializeField] List<Item> itens;
+    public List<Item> itens;
     Inventory loot;
 
     bool destruir = false;
+    private void OnValidate()
+    {
+        actionText = "Saquear";
+    }
 
     bool MenuSceneLoaded
     {
@@ -31,9 +35,7 @@ public class ItemDeColetaNoCenario : ObjetoDeInteracao
 
     public override void Interagir(GameObject agent)
     {
-        float distancia = Vector3.Distance(agent.transform.position, pontoDeInteração) - raioDeInteração;
-        Debug.Log(distancia);
-        if (distancia <= 0)
+        if (InRange(agent))
         {
             if (!MenuSceneLoaded)
                 FindObjectOfType<GameManagerScript>().LoadHud("PlayerMenu");

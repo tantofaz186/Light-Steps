@@ -8,9 +8,12 @@ public class DadosSaveGame
     ///ex: posição de um personagem, itens no inventário, fase atual
     ///O objetivo dessa classe é ser incrementada com o passar do projeto com a adição de classes de dados criadas na nova versão
     public PlayerData player;
-
+    public List<NPCData> NPCs;
+    public List<Quest> quests;
     public DadosSaveGame()
     {
-        player = null;
+        player = default;
+        NPCs = default;
+        quests = default;
     }
 }

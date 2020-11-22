@@ -23,7 +23,6 @@ public class PlayerCharScript : MonoBehaviour
     public float turnSmoothTime = 0.1f;
     public float turnSmoothVelocity;
     public bool canMove = true;
-
     void Awake()
     {
         player = new PlayerData();
@@ -55,34 +54,43 @@ public class PlayerCharScript : MonoBehaviour
             #endregion
 
             #region Interagir
-            if (Input.GetButtonDown("Interact"))
+            Collider[] hits = Physics.OverlapSphere(transform.position, 20);
+            if (hits.Length > 0)
             {
-                Collider[] hits = Physics.OverlapSphere(transform.position, 20);
-                if (hits.Length > 0)
-                {
-                    Collider hit = null;
+                Collider hit = null;
 
-                    for (int i = 0; i < hits.Length; i++)
+                for (int i = 0; i < hits.Length; i++)
+                {
+                    if (hits[i].TryGetComponent<ObjetoDeInteracao>(out _))
                     {
-                        if (hits[i].TryGetComponent<ObjetoDeInteracao>(out _))
+                        if (hit == null) hit = hits[i];
+                        float oldDist = Vector3.Distance(transform.position, hit.transform.position);
+                        float newDist = Vector3.Distance(transform.position, hits[i].transform.position);
+                        if (newDist < oldDist)
                         {
-                            if (hit == null) hit = hits[i];
-                            float oldDist = Vector3.Distance(transform.position, hit.transform.position);
-                            float newDist = Vector3.Distance(transform.position, hits[i].transform.position);
-                            if (newDist < oldDist)
-                            {
-                                hit = hits[i];
-                            }
+                            hit = hits[i];
                         }
                     }
                     if (hit != null)
                     {
                         ObjetoDeInteracao objeto = hit.GetComponent<ObjetoDeInteracao>();
-                        Debug.Log(hit.name);
-                        Interagir(objeto);
+                        if (Input.GetButtonDown("Interact"))
+                        {
+                            Interagir(objeto);
+                        }/*
+                        if (objeto.InRange(gameObject))
+                        {
+                            DialogController.instance.SetAction(objeto);
+                        }
+                        else
+                        {
+                            DialogController.instance.HidePanel();
+                        }*/
+
                     }
                 }
             }
+
             #endregion
         }
     }

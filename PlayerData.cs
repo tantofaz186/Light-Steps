@@ -18,11 +18,12 @@ public class PlayerData : CharacterData
 }
 public class NPCData : CharacterData
 {
-    public int afinidade;//valor de afinidade que varia 0 a 100 - sendo 0 completamente hostil e 100 completamente amigavel
-
+    public int afinidade;// 0 - 5: violento; 6 - 14:  neutro; 15 - 20: amigo;
+    // Escolha da ação (atacar, comportamento padrão, conversar)
+    public float atencao;
     public NPCData()
     {
-        afinidade = 50;
+
     }
     public override void PrintStats()
     {

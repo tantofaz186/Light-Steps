@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,25 +14,61 @@ public class DialogController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (instance == null){
+        if (instance == null)
+        {
             instance = this;
-        }else{
+        }
+        else
+        {
             Destroy(gameObject);
         }
         HidePanel();
     }
-
-    public void SetDialog(DialogItem item){
-        dialog.text = item.dialog;
+    public void SetAction(ObjetoDeInteracao interacao)
+    {
+        dialog.text = interacao.actionText;
         ShowPanel();
-        Invoke("HidePanel", time);
+    }
+    public void SetDialog(DialogItem item)
+    {
+        if (!running)
+        {
+            ShowPanel();
+            StartCoroutine(PercorrerDialogo(item));
+        }
+    }
+    bool running = false;
+    IEnumerator PercorrerDialogo(DialogItem item)
+    {
+        running = true;
+        yield return new WaitForEndOfFrame();
+        if (item.index >= item.dialog.Length)
+        {
+            if (item.repeatAllDialog)
+                item.index = 0;
+            else//repete apenas a ultima fala
+                item.index = item.dialog.Length - 1;
+            HidePanel();
+            running = false;
+            StopAllCoroutines();
+        }
+        else
+        {
+            dialog.text = item.dialog[item.index];
+            yield return new WaitUntil(() => (Input.GetButtonDown("Interact") || Input.GetButtonDown("Confirm")));
+            item.index += 1;
+            StartCoroutine(PercorrerDialogo(item));
+        }
     }
 
-    void ShowPanel(){
+
+    void ShowPanel()
+    {
         dialogPanel.SetActive(true);
     }
 
-     void HidePanel(){
+    public void HidePanel()
+    {
         dialogPanel.SetActive(false);
     }
 
