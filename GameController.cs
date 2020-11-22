@@ -6,8 +6,8 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     DadosSaveGame saveGame;
-    string saveGameFileName = "Light_Steps_Save.xml";
-    string senha = "Inventário é chato de programar. Nossa senhora!";
+    string saveGameFileName = "FileName.xml";
+    string senha = "DefaultPasswordPleaseDoNOTUseThisOneOk?";
 
     public PlayerData player;
     public List<NPCData> NPCs;
