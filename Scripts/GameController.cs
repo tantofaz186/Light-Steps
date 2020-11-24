@@ -23,7 +23,9 @@ public class GameController : MonoBehaviour
     void Start()
     {
         saveGame = new DadosSaveGame();
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerCharScript>().player;
+        player = new PlayerData();
+        NPCs = new List<NPCData>();
+        quests = new List<Quest>();
     }
 
 
@@ -38,7 +40,7 @@ public class GameController : MonoBehaviour
     {
         XmlSerializer serializador = new XmlSerializer(typeof(DadosSaveGame));  //serializador de XML
         StreamWriter escritaDoArquivo = new StreamWriter(saveGameFileName);        //abre o arquivo para salvar
-
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerCharScript>().player;
         foreach(NPCScript npcObject in FindObjectsOfType<NPCScript>())
         {
             NPCs.Add(npcObject.npc);
